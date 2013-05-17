@@ -2310,6 +2310,8 @@ if __name__ == '__main__':
         gui.systray.setActionText("show", gui.tr("Restore"))
     else:
         gui.show()
-
+    
     # Exit properly
-    sys.exit(gui.systray.exec_(app))
+    exit_code = gui.systray.exec_(app)
+    os.remove(os.environ.get("instance_file"))
+    sys.exit(exit_code)

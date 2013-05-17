@@ -2,18 +2,22 @@
 
 # Check if already running
 
-PROCS=`ps -ea -f | grep /share/cadence/src/cadence.py | grep python`
+if [ "$cadence_instance_file" ];
+then instance_file="$cadence_instance_file";
+else instance_file="$HOME/.cadence_instance"
+fi
 
-if [ x"$PROCS" != x"" ]; then
+pid_l_num=1
+cmd_l_num=2
 
-  # One instance only
-  PROC=`echo "$PROCS" | head -n 1`
+# 1. Does instance file exists...
+if [ -e "$instance_file" ]; then
 
-  # Get PID
-  PID=`echo "$PROC" | awk '{printf$2}'`
+  # 2. ...PID is valuable and command line matches
+  PID=`head -n $pid_l_num "$instance_file" | tail -n 1`;
 
-  # Last check, just to make sure
-  if [ x"$PID" != x"" ]; then
+  # Elements should be checked from left
+  if (( PID > 0 )) && [ "`ps -o cmd= $PID`" = "`head -n $cmd_l_num \"$instance_file\" | tail -n 1`" ]; then
 
     # Tell user about this
     echo "Cadence already started, showing GUI now..."
@@ -23,7 +27,6 @@ if [ x"$PROCS" != x"" ]; then
 
     # Quit now
     exit
-
   fi
 fi
 
@@ -34,5 +37,11 @@ else
 fi
 
 # We only got here if not running yet
-INSTALL_PREFIX="X-PREFIX-X"
+INSTALL_PREFIX="/usr"
+
+# Fill instance file
+echo $BASHPID > "$instance_file"
+echo $PYTHON $INSTALL_PREFIX/share/cadence/src/cadence.py "$@" >> "$instance_file"
+
+export instance_file
 exec $PYTHON $INSTALL_PREFIX/share/cadence/src/cadence.py "$@"
