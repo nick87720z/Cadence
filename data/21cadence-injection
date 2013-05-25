@@ -3,7 +3,6 @@
 
 INSTALL_PREFIX="X-PREFIX-X"
 
-CADENCE_SESSION="$INSTALL_PREFIX/bin/cadence-session-start --system-start"
-exec $CADENCE_SESSION &
+STARTUP="$INSTALL_PREFIX/bin/cadence-session-start --session $STARTUP"
 
 unset INSTALL_PREFIX
