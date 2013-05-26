@@ -122,25 +122,35 @@ def stopAllAudioProcesses():
     process.start("killall", procsTerm)
     process.waitForFinished()
 
-    for x in range(tries):
-        procsList = getProcList()
-        for term in range(len(procsTerm)):
-            if term in procsList:
+    attempt = 1
+    to_Break = False
+
+    procsList = getProcList()
+    for term in procsTerm:
+        while term in procsList:
+            sleep(0.1)
+            procsList = getProcList()
+            attempt += 1
+            if attempt > tries:
+                to_Break = True
                 break
-            else:
-                sleep(0.1)
-        else:
+        if to_Break:
             break
 
     process.start("killall", ["-KILL"] + procsKill)
     process.waitForFinished()
 
-    for x in range(tries):
-        procsList = getProcList()
-        for kill in range(len(procsKill)):
-            if kill in procsList:
+    attempt = 1
+    to_Break = False
+
+    procsList = getProcList()
+    for kill in procsKill:
+        while kill in procsList:
+            sleep(0.1)
+            procsList = getProcList()
+            attempt += 1
+            if attempt > tries:
+                to_Break = True
                 break
-            else:
-                sleep(0.1)
-        else:
+        if to_Break:
             break
