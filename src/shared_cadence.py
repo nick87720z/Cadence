@@ -121,11 +121,10 @@ def stopAllAudioProcesses():
 
     process.start("killall", procsTerm)
     process.waitForFinished()
-    waitProcsDeath(procsTerm, tries)
-
     process.start("killall", ["-KILL"] + procsKill)
     process.waitForFinished()
-    waitProcsDeath(procsKill, tries)
+
+    waitProcsDeath(procsTerm + procsKill, tries)
 
 # Helper to wait for death of all processes in list (no matter how — killed, terminated or something else)
 # Hint: tries = 0 (default value) results in infinite wait time
